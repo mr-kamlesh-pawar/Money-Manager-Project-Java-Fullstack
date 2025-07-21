@@ -6,6 +6,7 @@ import com.kp.moneyManager.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -13,11 +14,19 @@ import java.util.UUID;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final EmailService emailService;
 
     public ProfileDTO registerProfile(ProfileDTO profileDTO){
         ProfileEntity newProfile = toEntity(profileDTO);
         newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile = profileRepository.save(newProfile);
+
+        //send Activation Mail
+        String activationLink = "http://localhost:8080/api/v1.0/activate?token=" + newProfile.getActivationToken();
+        String subject = "Active Your Money Manager Account.";
+        String body = "Click on the following Link to activate your account :"+ activationLink;
+
+        emailService.sendMail(newProfile.getEmail(), subject, body);
 
         return toDTO(newProfile);
 
@@ -48,5 +57,23 @@ public class ProfileService {
     }
 
 
+    public Boolean activateProfile(String activationToken){
+        return profileRepository.findByActivationToken(activationToken)
+                .map(profile -> {
+                    profile.setIsActive(true);
+                    profileRepository.save(profile);
+                    return true;
+                })
+                .orElse(false);
 
+    }
+
+
+    public boolean checkUserAlreadyActive(String token) {
+        Optional<ProfileEntity> profile = profileRepository.findByActivationToken(token);
+        if(profile.get().getIsActive()){
+            return true;
+        }
+        return false;
+    }
 }

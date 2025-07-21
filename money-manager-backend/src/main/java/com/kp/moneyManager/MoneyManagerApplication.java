@@ -4,11 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MoenyManagerApplication {
+public class MoneyManagerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MoenyManagerApplication.class, args);
-		System.out.println("Hiii");
+		SpringApplication.run(MoneyManagerApplication.class, args);
+		System.out.println("\n\n....................App Successfully Started...................");
 
 	}
 
