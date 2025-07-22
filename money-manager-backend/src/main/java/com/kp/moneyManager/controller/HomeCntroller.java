@@ -11,6 +11,8 @@ public class HomeCntroller {
     @GetMapping()
     public String healthCheck(){
 
-        return "Running Sucessfully";
+        return "Running Successfully";
     }
+
+
 }

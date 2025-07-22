@@ -1,7 +1,10 @@
 package com.kp.moneyManager.util;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -29,10 +32,15 @@ public class JwtUtil {
         try {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException e) {
+            throw new JwtAuthenticationException("Token expired");
+        } catch (SignatureException | MalformedJwtException e) {
+            throw new JwtAuthenticationException("Invalid token");
         } catch (Exception e) {
-            return false;
+            throw new JwtAuthenticationException("Unauthorized access");
         }
     }
+
 
     public long getExpirationTime() {
         return EXPIRATION_TIME;
