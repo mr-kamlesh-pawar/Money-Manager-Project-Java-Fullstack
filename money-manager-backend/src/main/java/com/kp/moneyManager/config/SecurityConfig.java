@@ -34,14 +34,19 @@ public class SecurityConfig {
         public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws  Exception{
             httpSecurity.cors(Customizer.withDefaults())
                     .csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests(auth -> auth.requestMatchers("/status", "/health", "/login", "/register", "/activate").permitAll()
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers(
+                                    "/status",
+                                    "/health",
+                                    "/login",
+                                    "/register",
+                                    "/activate").permitAll()
                             .anyRequest().authenticated())
                     .sessionManagement(session ->  session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
              .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); // add JWT filter
 
             return httpSecurity.build();
-
 
         }
 

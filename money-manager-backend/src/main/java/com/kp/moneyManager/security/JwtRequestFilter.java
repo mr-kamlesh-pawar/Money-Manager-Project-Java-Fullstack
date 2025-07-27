@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -33,16 +34,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         try {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
-               try {
                 jwt = authHeader.substring(7);
                 email = jwtUtil.extractEmail(jwt);
-               } catch (Exception e){
-                   sendErrorResponse(response, "Invalid Token.");
-                   return;
-               }
-            } else {
-                sendErrorResponse(response, "Token not found.");
-                return;
             }
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -53,11 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                             userDetails, null, userDetails.getAuthorities());
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                } else {
-                    sendErrorResponse(response, "Invalid or expired token.");
-                    return;
                 }
             }
 
@@ -68,8 +57,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Skip filter for these endpoints
+        return request.getServletPath().equals("/status")
+                || request.getServletPath().equals("/health")
+                || request.getServletPath().equals("/login")
+                || request.getServletPath().equals("/register")
+                || request.getServletPath().equals("/activate");
+    }
+
     private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.getWriter().write("{\"error\": \"" + message + "\"}");
     }

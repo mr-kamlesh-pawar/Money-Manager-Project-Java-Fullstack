@@ -4,6 +4,7 @@ import com.kp.moneyManager.dto.AuthDTO;
 import com.kp.moneyManager.dto.ProfileDTO;
 import com.kp.moneyManager.entity.ProfileEntity;
 import com.kp.moneyManager.repository.ProfileRepository;
+import com.kp.moneyManager.util.EmailAlreadyExistsException;
 import com.kp.moneyManager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +31,10 @@ public class ProfileService {
     private final JwtUtil  jwtUtil;
 
     public ProfileDTO registerProfile(ProfileDTO profileDTO){
+        if (profileRepository.findByEmail(profileDTO.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistsException("Email " + profileDTO.getEmail() + " is already registered");
+        }
+
         ProfileEntity newProfile = toEntity(profileDTO);
         newProfile.setActivationToken(UUID.randomUUID().toString());
        newProfile.setPassword(passwordEncoder.encode(newProfile.getPassword()));
