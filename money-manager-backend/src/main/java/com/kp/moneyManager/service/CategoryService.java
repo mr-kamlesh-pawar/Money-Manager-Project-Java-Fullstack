@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -31,11 +33,16 @@ public class CategoryService {
 
             newCategory = categoryRepository.save(newCategory);
              return toDTO(newCategory);
-
-
     }
 
 
+    //get categories for current user
+    public List<CategoryDTO> getCategoriesForCurrentUser(){
+        ProfileEntity profile= profileService.getCurrentProfile();
+        List<CategoryEntity> categoryEntityList = categoryRepository.findByProfileId(profile.getId());
+
+        return categoryEntityList.stream().map(this::toDTO).toList();
+    }
 
 
 
