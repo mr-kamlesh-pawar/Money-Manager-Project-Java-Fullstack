@@ -1,7 +1,6 @@
 package com.kp.moneyManager.repository;
 
 import com.kp.moneyManager.entity.CategoryEntity;
-import com.kp.moneyManager.entity.ProfileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,15 +14,12 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
     List<CategoryEntity> findByProfileId(Long profileId);
 
     //select * from tbl_categories where id ?  and profileId =?;
-    Optional<ProfileEntity> findByIdAndProfileId(Long id, Long profileId);
+    Optional<CategoryEntity> findByIdAndProfileId(Long id, Long profileId);
 
     //select * from tbl_categories where type=? and profile_id=?;
     List<CategoryEntity> findByTypeAndProfileId(String type, Long profileId);
 
     Boolean existsByNameAndProfileId(String name, Long profileId);
-
-
-
 
 
 }
