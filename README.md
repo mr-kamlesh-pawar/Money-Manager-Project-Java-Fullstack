@@ -51,9 +51,7 @@
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Java 17+
-- MySQL 8.0+
-- Maven
+### Testing Postman
+- <a href="https://kp8888-5028.postman.co/workspace/My-Workspace~6c744855-0977-40fe-8721-262165c91e7b/collection/37531972-fc230055-720c-4436-b408-2f894df1e234?action=share&creator=37531972" > API Testing Collection </a>
 
 ---------------------------------------------------------------------
