@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MoneyManagerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MoneyManagerApplication.class, args);
-		System.out.println("\n\n....................App Successfully Started...................");
+    public static void main(String[] args) {
+        SpringApplication.run(MoneyManagerApplication.class, args);
+        System.out.println("\n\n\n....................App Successfully Started...................\n\n");
 
-	}
+    }
 
 }

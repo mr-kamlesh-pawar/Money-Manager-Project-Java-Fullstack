@@ -17,9 +17,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryDTO> saveCategory(@RequestBody CategoryDTO categoryDTO) {
-
         CategoryDTO savedCategory = categoryService.saveCategory(categoryDTO);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
 
@@ -27,7 +25,6 @@ public class CategoryController {
     ResponseEntity<List<CategoryDTO>> getCategories() {
         List<CategoryDTO> categories = categoryService.getCategoriesForCurrentUser();
         if (categories.isEmpty()) {
-
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(categories);

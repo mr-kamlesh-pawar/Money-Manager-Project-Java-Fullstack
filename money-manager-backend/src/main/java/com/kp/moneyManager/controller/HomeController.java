@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping({"/status", "/health"})
-public class HomeCntroller {
+public class HomeController {
 
     @GetMapping()
-    public String healthCheck(){
+    public String healthCheck() {
 
         return "Running Successfully";
     }
