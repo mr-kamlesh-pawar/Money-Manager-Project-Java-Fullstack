@@ -8,7 +8,9 @@ import com.kp.moneyManager.repository.CategoryRepository;
 import com.kp.moneyManager.repository.ExpenseRepository;
 import com.kp.moneyManager.util.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
     private final ProfileService profileService;
+
 
     //add expense to database
     public ExpenseDTO addExpense(ExpenseDTO dto) {
@@ -43,7 +46,6 @@ public class ExpenseService {
 
         return list.stream().map(this::toDTO).toList();
     }
-
 
     //delete expense of current user
     public void deleteExpense(Long expenseId) {
@@ -70,6 +72,21 @@ public class ExpenseService {
         return total != null ? total : BigDecimal.ZERO;
     }
 
+    //filter expenses
+    public List<ExpenseDTO> filterExpenses(LocalDate start, LocalDate end, String keyword, Sort sort) {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(), start, end, keyword, sort);
+
+        return list.stream().map(this::toDTO).toList();
+
+    }
+
+    //notifications
+    @Transactional(readOnly = true)
+    public List<ExpenseDTO> getExpensesForProfileIdOnDate(Long profileId, LocalDate date) {
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDate(profileId, date);
+        return list.stream().map(this::toDTO).toList();
+    }
 
     //helper methods
     private ExpenseEntity toEntity(ExpenseDTO dto, ProfileEntity profile, CategoryEntity category) {

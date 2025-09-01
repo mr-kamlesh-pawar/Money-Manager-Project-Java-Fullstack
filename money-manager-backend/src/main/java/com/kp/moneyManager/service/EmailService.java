@@ -1,10 +1,11 @@
 package com.kp.moneyManager.service;
 
 
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,13 +21,15 @@ class EmailService {
     public void sendMail(String to, String subject, String body) {
 
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(to);
-            message.setSubject(subject);
-            message.setText(body);
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 
-            mailSender.send(message);
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(body, true); // true = HTML mail
+
+            mailSender.send(mimeMessage);
 
 
         } catch (Exception e) {
