@@ -4,12 +4,12 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /app
 
-# Copy pom.xml and download dependencies
-COPY pom.xml .
+# Copy pom.xml
+COPY money-manager-backend/pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copy source code and build
-COPY src ./src
+# Copy source code
+COPY money-manager-backend/src ./src
 RUN mvn clean package -DskipTests
 
 # ============================
@@ -18,14 +18,12 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-# Copy JAR from builder stage
+# Copy jar from builder
 COPY --from=builder /app/target/*.jar app.jar
 
-# Set active profile (prod)
+# Set active profile
 ENV SPRING_PROFILES_ACTIVE=prod
 
-# Expose the port Spring Boot runs on
 EXPOSE 8080
 
-# Run the application
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
