@@ -7,6 +7,7 @@ import com.kp.moneyManager.repository.ProfileRepository;
 import com.kp.moneyManager.util.EmailAlreadyExistsException;
 import com.kp.moneyManager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
@@ -49,7 +51,12 @@ public class ProfileService {
         String subject = "Active Your Money Manager Account.";
         String body = "Click on the following Link to activate your account :" + activationLink;
 
-        emailService.sendMail(newProfile.getEmail(), subject, body);
+        try {
+            emailService.sendMail(newProfile.getEmail(), subject, body);
+        } catch (Exception e) {
+            log.error("Email sending failed: {}", e.getMessage());
+        }
+
 
         return toDTO(newProfile);
 
